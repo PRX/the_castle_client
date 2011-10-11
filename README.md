@@ -1,0 +1,1 @@
+This is the client gem to connect to the api for The Castle, the PRX data warehouse.
