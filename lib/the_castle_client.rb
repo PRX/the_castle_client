@@ -4,7 +4,7 @@ require 'cgi'
 
 module TheCastleClient
   class << self
-    
+
     attr_accessor :key, :secret, :scheme, :host, :port, :version
 
     def account_data(account_id, options={})
@@ -14,6 +14,11 @@ module TheCastleClient
 
     def account_aggregates(account_id)
       url = "/api/#{version}/accounts/#{account_id}/aggregates"
+      get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+    end
+
+    def piece_data(piece_id, options={})
+      url = "/api/#{version}/pieces/#{piece_id}#{to_query(options)}"
       get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
     end
 

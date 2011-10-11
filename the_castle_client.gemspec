@@ -6,10 +6,10 @@ Gem::Specification.new do |s|
   s.name        = "the_castle_client"
   s.version     = TheCastleClient::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Andrew Kuklewicz (kookster)"]
+  s.authors     = ["kookster"]
   s.email       = ["andrew@prx.org"]
   s.homepage    = ""
-  s.summary     = %q{Get data from the castle.}
+  s.summary     = %q{Get data from the castle, the PRX data warehouse.}
   s.description = %q{Client to connect via 2-legged oauth, and get data from the castle.}
 
   s.rubyforge_project = "the_castle_client"
