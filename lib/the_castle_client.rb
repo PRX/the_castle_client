@@ -7,23 +7,9 @@ module TheCastleClient
 
     attr_accessor :key, :secret, :scheme, :host, :port, :version
 
-    def account_data(account_id, options={})
-      url = "/api/#{version}/accounts/#{account_id}#{to_query(options)}"
-      get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
-    end
-
-    def account_aggregates(account_id)
-      url = "/api/#{version}/accounts/#{account_id}/aggregates"
-      get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
-    end
-
-    def piece_data(piece_id, options={})
-      url = "/api/#{version}/pieces/#{piece_id}#{to_query(options)}"
-      get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
-    end
-
-    def piece_aggregates(piece_id)
-      url = "/api/#{version}/pieces/#{piece_id}/aggregates"
+    def query(id, model='account', data_type='', options={})
+      raise "Invalid data type #{data_type}" unless ['aggregates', 'referrers', 'embedders', ''].include?(data_type)
+      url = "/api/#{version}/#{model}s/#{id}/#{data_type}#{to_query(options)}"
       get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
     end
 
@@ -34,6 +20,12 @@ module TheCastleClient
       url = "/api/#{version}/pieces/popular#{to_query(options)}"
       get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
     end
+
+    #  these are just niceties around the query method; deprecate?
+    def account_data(id, opts={}); query(id, 'account', '', opts); end
+    def account_aggregates(id); query(id, 'account', 'aggregates'); end
+    def piece_data(id, opts={}); query(id, 'piece', '', opts); end
+    def piece_aggregates(id); query(id, 'piece', 'aggregates'); end
 
     protected
 
