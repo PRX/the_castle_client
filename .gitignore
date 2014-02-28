@@ -2,3 +2,6 @@
 .bundle
 Gemfile.lock
 pkg/*
+.env
+.ruby-version
+.DS_Store

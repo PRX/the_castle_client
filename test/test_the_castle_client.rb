@@ -1,48 +1,63 @@
 require 'helper'
+require 'active_support/all'
 
 class TestTheCastleClient < Test::Unit::TestCase
   
   def setup 
-    TheCastleClient.key     = '9NmQzsWBWs8TyfJswqMmkmjwAH3ItNBIC72KLjQK'
-    TheCastleClient.secret  = '592BSoaCb4FfwqsZ6Ql8WShVZ6HVnecR4Dk9lRfQ'
-    TheCastleClient.host    = "development.prx.org"
-    TheCastleClient.port    = 3000
-    TheCastleClient.version = 'v1'
+    TheCastleClient.key     = ENV['CASTLE_KEY']
+    TheCastleClient.secret  = ENV['CASTLE_SECRET']
+    TheCastleClient.host    = ENV['CASTLE_HOST']    || 'thecastle.dev'
+    TheCastleClient.port    = ENV['CASTLE_PORT']    || 80
+    TheCastleClient.version = ENV['CASTLE_VERSION'] || 'v1'
+
+    @end_on = Date.today
+    @start_on = @end_on - 3.months
+
+    @account_id = 3437
+    @piece_id = 73865
   end
-  
+
   def test_account_data
-    response = TheCastleClient.account_data(7018, {:scale=>'week', :start_on=>'2010-01-01', :end_on=>'2010-04-01'})
+    response = TheCastleClient.account_data(@account_id, {:scale=>'week', :start_on=>@start_on, :end_on=>@end_on})
     puts response.read_body
   end
   
   def test_account_embedders
-    response = TheCastleClient.query(128129, 'account', 'embedders', {:scale=>'week', :start_on=>'2011-10-24', :end_on=>'2011-11-02'})
+    response = TheCastleClient.query(@account_id, 'account', 'embedders', {:scale=>'week', :start_on=>@start_on, :end_on=>@end_on})
     puts response.read_body
   end
-  
-  def test_account_referrers
-    response = TheCastleClient.query(128129, 'account', 'referrers', {:scale=>'week', :start_on=>'2011-10-24', :end_on=>'2011-11-02'})
-    puts response.read_body
-  end
-  
+
   def test_account_aggregates
-    response = TheCastleClient.account_aggregates(7018)
+    response = TheCastleClient.account_aggregates(@account_id)
     puts response.read_body
   end
   
   def test_piece_aggregates
-    response = TheCastleClient.piece_aggregates(37745)
+    response = TheCastleClient.piece_aggregates(@piece_id)
     puts response.read_body
   end
   
   def test_piece_data
-    response = TheCastleClient.piece_data(37745, {:scale=>'week', :start_on=>'2010-01-01', :end_on=>'2010-04-01'})
+    @end_on = Date.today
+    @start_on = @end_on - 3.months
+    response = TheCastleClient.piece_data(@piece_id, {:scale=>'week', :start_on=>@start_on, :end_on=>@end_on})
     puts response.read_body
   end
   
   def test_popular_pieces
-    response = TheCastleClient.popular_pieces(Date.parse('2011-01-03'), 10)
+    response = TheCastleClient.popular_pieces(@start_on, 10)
     puts response.read_body
   end
   
+  def test_most_listened_pieces
+    response = TheCastleClient.most_listened_pieces(@start_on, 10)
+    puts response.read_body
+  end
+
+  # this cube is not deployed to production yet
+  # def test_account_referrers
+  #   response = TheCastleClient.query(128129, 'account', 'referrers', {:scale=>'week', :start_on=>'2011-10-24', :end_on=>'2011-11-02'})
+  #   puts response.read_body
+  # end
+
 end

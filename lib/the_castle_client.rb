@@ -7,9 +7,10 @@ module TheCastleClient
 
     attr_accessor :key, :secret, :scheme, :host, :port, :version
 
-    def query(id, model='account', data_type='', options={})
-      raise "Invalid data type #{data_type}" unless ['aggregates', 'referrers', 'embedders', ''].include?(data_type)
-      url = "/api/#{version}/#{model}s/#{id}/#{data_type}#{to_query(options)}"
+    def most_listened_pieces(most_on=Date.today, limit=25)
+      most_on = Date.parse(most_on) if most_on.is_a?(String)
+      options = {'most_on'=>most_on.to_s, 'limit'=>limit}
+      url = "/api/#{version}/pieces/most_listened#{to_query(options)}"
       get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
     end
 
@@ -22,10 +23,16 @@ module TheCastleClient
     end
 
     #  these are just niceties around the query method; deprecate?
-    def account_data(id, opts={}); query(id, 'account', '', opts); end
+    def account_data(id, opts={}); query(id, 'account', nil, opts); end
     def account_aggregates(id); query(id, 'account', 'aggregates'); end
-    def piece_data(id, opts={}); query(id, 'piece', '', opts); end
+    def piece_data(id, opts={}); query(id, 'piece', nil, opts); end
     def piece_aggregates(id); query(id, 'piece', 'aggregates'); end
+
+    def query(id, model='account', data_type=nil, options={})
+      raise "Invalid data type #{data_type}" unless ['aggregates', 'referrers', 'embedders', '', nil].include?(data_type)
+      url = ['/api', version, model.pluralize, id, data_type].compact.join("/") + to_query(options)
+      get(url, {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+    end
 
     protected
 
